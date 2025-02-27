@@ -21,7 +21,8 @@ jobs:
           ssh-keyscan -H 118.139.179.71 >> ~/.ssh/known_hosts
 
           # Deploy code using SCP (replace 'username' and 'server_path' accordingly)
-          scp -r * oglo4hn6srn7@118.139.179.71:/home/oglo4hn6srn7/public_html/erp
+          rsync -avz --delete --exclude=".git" --exclude="storage" --progress ./ oglo4hn6srn7@118.139.179.71:/home/oglo4hn6srn7/public_html/erp/
+
 
       - name: Run Deployment Commands on Server
         run: |
