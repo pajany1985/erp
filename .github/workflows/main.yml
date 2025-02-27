@@ -28,7 +28,7 @@ jobs:
         run: |
             ssh -tt oglo4hn6srn7@118.139.179.71 << 'EOF'
             cd /home/oglo4hn6srn7/public_html/erp || exit 1
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
+            /usr/local/bin/ea-php74 artisan config:cache
+            /usr/local/bin/ea-php74 artisan route:cache
+            /usr/local/bin/ea-php74 artisan view:cache
             EOF
