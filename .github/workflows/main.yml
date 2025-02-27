@@ -25,7 +25,7 @@ jobs:
 
       - name: Run Deployment Commands on Server
         run: |
-          ssh oglo4hn6srn7@118.139.179.71 << 'EOF'
+          ssh -o StrictHostKeyChecking=no -o LogLevel=ERROR -t oglo4hn6srn7@118.139.179.71 << 'EOF'
           cd /home/oglo4hn6srn7/public_html/erp || exit 1
           /usr/local/bin/ea-php74 artisan config:cache
           /usr/local/bin/ea-php74 artisan route:cache
