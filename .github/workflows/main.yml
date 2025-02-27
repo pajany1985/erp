@@ -1,9 +1,9 @@
-name: Deploy to ERP 
+name: Deploy to GoDaddy Server
 
 on:
   push:
     branches:
-      - main  # Change this if your main branch is named differently
+      - main
 
 jobs:
   deploy:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup SSH and Deploy to GoDaddy
+      - name: Setup SSH and Deploy to ERP
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.ERP_SSH_KEY }}" > ~/.ssh/id_rsa
@@ -21,14 +21,14 @@ jobs:
           ssh-keyscan -H 118.139.179.71 >> ~/.ssh/known_hosts
 
           # Deploy only changed files, excluding .git and storage folder
-          rsync -avz --delete --exclude=".git" --exclude="storage" --progress -e "ssh -o StrictHostKeyChecking=no" ./ oglo4hn6srn7@118.139.179.71:/home/oglo4hn6srn7/public_html/erp/
+          rsync -avz --delete --exclude=".git" --exclude="storage" -e "ssh -o StrictHostKeyChecking=no" ./ oglo4hn6srn7@118.139.179.71:/home/oglo4hn6srn7/public_html/erp/
 
       - name: Run Deployment Commands on Server
         run: |
-          ssh -tt oglo4hn6srn7@118.139.179.71 << 'EOF'
+          ssh -o LogLevel=QUIET -o StrictHostKeyChecking=no oglo4hn6srn7@118.139.179.71 << 'EOF'
           cd /home/oglo4hn6srn7/public_html/erp || exit 1
-          /usr/local/bin/ea-php74 artisan config:cache
-          /usr/local/bin/ea-php74 artisan route:cache
-          /usr/local/bin/ea-php74 artisan view:cache
+          /usr/bin/php74 artisan config:cache
+          /usr/bin/php74 artisan route:cache
+          /usr/bin/php74 artisan view:cache
           exit
           EOF
