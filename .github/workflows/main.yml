@@ -1,0 +1,36 @@
+name: Deploy to GoDaddy
+
+on:
+  push:
+    branches:
+      - main  # Change this to your main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup SSH and Deploy to GoDaddy
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.ERP_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 118.139.179.71 >> ~/.ssh/known_hosts
+
+          # Deploy code using SCP (replace 'username' and 'server_path' accordingly)
+          scp -r * oglo4hn6srn7@118.139.179.71:/home/oglo4hn6srn7/public_html/erp
+
+      - name: Run Deployment Commands on Server
+        run: |
+          ssh oglo4hn6srn7@118.139.179.71 << 'EOF'
+          cd /home/oglo4hn6srn7/public_html/erp
+          composer install --no-dev --optimize-autoloader
+          php artisan migrate --force
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          exit
+          EOF
