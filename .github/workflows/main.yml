@@ -13,7 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup SSH and Deploy to ERP
+      - name: Setup SSH and Deploy to GoDaddy
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.ERP_SSH_KEY }}" > ~/.ssh/id_rsa
@@ -27,8 +27,8 @@ jobs:
         run: |
           ssh -o LogLevel=QUIET -o StrictHostKeyChecking=no oglo4hn6srn7@118.139.179.71 << 'EOF'
           cd /home/oglo4hn6srn7/public_html/erp || exit 1
-          /usr/bin/php74 artisan config:cache
-          /usr/bin/php74 artisan route:cache
-          /usr/bin/php74 artisan view:cache
+          /usr/local/bin/ea-php74 artisan config:cache
+          /usr/local/bin/ea-php74 artisan route:cache
+          /usr/local/bin/ea-php74 artisan view:cache
           exit
           EOF
